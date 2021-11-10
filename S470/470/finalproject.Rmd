@@ -1,0 +1,66 @@
+---
+title: "finalproject"
+author: "Die Hu"
+date: "4/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+csv <- read.csv('application_data.csv')
+#dat <-data.frame(csv[1:1500,])
+dat=csv[1:1000,]
+```
+#Checking Distribution of Target Variable
+```{r}
+#Target variable (1 - client with payment difficulties: he/she had late payment more than X days on at least one of the first Y installments of the loan in our sample, 0 - all other cases)
+count(dat,TARGET == 0)
+nondefaulters = 930/nrow(dat)*100
+defaulters = 70/nrow(dat)*100
+cat('Percentage of people who have paid their loan:',nondefaulters, '%\n')
+cat('Percentage of people who have NOT paid their loan:',defaulters, '%\n')
+cat("The Ratio of Data Imbalance is:",round(nondefaulters/defaulters,digits=2))
+```
+#Return tables with columns with missing value precentage 
+```{r}
+data.frame(sapply(dat, function(x) sum(is.na(x))/1000))
+```
+#Drop columns with high missing value 
+```{r}
+dat = dat[, which(colMeans(!is.na(dat)) > 0.42)] #Selected 42% because we don't want to drop EXT_SOURCE_1 which is an important variable which has 57.6% of na variables.
+head(dat) # result in 103 columns
+```
+#Checking columns with very less missing values
+```{r}
+lessmissing = dat[, which(colMeans(is.na(dat)) < 0.2)]
+head(lessmissing)
+#Explanation for treatment of columns with low missing values
+```
+#Univariate Analyis on Categorical Columns
+```{r}
+library(tidycomm)
+dat %>% tab_frequencies(NAME_CONTRACT_TYPE,TARGET)
+ggplot(dat,aes(NAME_CONTRACT_TYPE,TARGET))+geom_bar(stat = "identity")
+dat %>% tab_frequencies(CODE_GENDER,TARGET)
+dat %>% tab_frequencies(FLAG_OWN_REALTY,TARGET)
+dat %>% tab_frequencies(FLAG_OWN_CAR,TARGET)
+dat %>% tab_frequencies(REG_CITY_NOT_LIVE_CITY,TARGET)
+dat %>% tab_frequencies(REG_CITY_NOT_WORK_CITY,TARGET)
+dat %>% tab_frequencies(NAME_HOUSING_TYPE,TARGET)
+dat %>% tab_frequencies(NAME_FAMILY_STATUS,TARGET)
+dat %>% tab_frequencies(NAME_EDUCATION_TYPE,TARGET)
+dat %>% tab_frequencies(NAME_INCOME_TYPE,TARGET)
+dat %>% tab_frequencies(WALLSMATERIAL_MODE,TARGET)
+dat %>% tab_frequencies(ORGANIZATION_TYPE,TARGET)
+dat %>% tab_frequencies(FLAG_WORK_PHONE,TARGET)
+dat %>% tab_frequencies(OCCUPATION_TYPE,TARGET)
+# plot
+```
+#Univariate & Bivariate Analyis on Numeric Columns
+```{r}
+
+```
+#

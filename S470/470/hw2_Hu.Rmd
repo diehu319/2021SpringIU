@@ -1,0 +1,49 @@
+---
+title: "hw2_Hu"
+author: "Die Hu"
+date: "2/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data <- read.csv(url("http://jfukuyama.github.io/teaching/stat670/notes/cytof_one_experiment.csv"))
+```
+
+### Question 1
+```{r}
+data_long <- pivot_longer(data, cols = everything())
+data_long
+ggplot(data_long, aes(x = value)) +
+    geom_density() +  geom_rug() +
+    facet_wrap(~ name)
+ggplot(data_long, aes(x = value)) +
+    geom_histogram() +  geom_rug() +
+    facet_wrap(~ name)
+ggplot(data_long, aes(x = value)) +
+    stat_ecdf(aes(color = as.factor(name)))
+ggplot(data_long, aes(x = value)) +
+    stat_ecdf() + facet_wrap(~ name)
+```
+I noticed that some graphs have common distributions and it is obvious to see that there're groups of markers that seem more similar to each other. For example,CD56, CD69, MIP1b, NKp30 are rougly normal distribution.
+
+### Question 2
+```{r}
+ggplot(data, aes(x = NKp30)) +
+    geom_histogram() +  geom_rug()
+ggplot(data, aes(x = CD56)) +
+    geom_histogram() +  geom_rug()
+```
+The two distributions are similar expect that the curves are just shifted along the x-axis from one another, and the overall shape is the similar for the two graphs.
+
+### Question 3
+```{r}
+library(ggpubr)
+summary(data_long)
+ggplot(data_long, aes(x = value)) +
+    geom_histogram() +  geom_rug()
+```
+From the graph above, it is not surprisly see that the distribution is similar to a group of the distributions seen in the faceted graphs.
